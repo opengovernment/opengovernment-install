@@ -1,0 +1,3 @@
+#!/bin/bash
+
+psql -c "alter user opengovernment with encrypted password '$POSTGRESUSERPWORD';"

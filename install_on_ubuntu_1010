@@ -1,0 +1,52 @@
+#!/bin/bash
+
+# To use this script:
+# Update the default values below with any changes you want.
+# If you are cloning a read-write copy of the og database, make sure that
+# you have given github your ssh key before starting the script.
+# 
+# Then run this script, as root, from the script's directory, as "./install_on_ubuntu_1010"
+#
+# when the script is done, you will need to set config/database.yml and config/api_keys.yml.
+# Then import data, and you should be good to go.
+
+[[ "$(whoami)" == "root" ]] || (echo "Please run this script as root/sudo." && exit 1)
+
+# This is the account you will run opengovernment from 
+# This account must already exist before the script is run
+USERNAME='dev'
+
+# This defaults to the read-only main repository on github.
+# If you use a read-write git repository on github, you need to exchange ssh keys
+# with github before you run this.
+GITREPO='http://github.com/opengovernment/opengovernment.git'
+
+# This is the password that will be used for the postgres user 'opengovernment'
+POSTGRESUSERPWORD='foobar'
+
+# If you use an apt cache (like 'apt-cacher'), specify the cache url as APTCACHE.
+# APTCACHE='dmac/apt-cacher/'
+APTCACHE=""
+
+# Mongo DB's Debian packages are here. Change this according to your Linux distribution.
+MONGOAPT="deb http://$APTCACHE/downloads.mongodb.org/distros/ubuntu 10.10 10gen"
+
+# The home directory for the user
+USERHOMEDIR="/home/$USERNAME"
+
+# opengovernment will be installed under this directory
+OPENGOVPARENTDIR=$USERHOMEDIR
+
+
+
+
+export MONGOAPT
+export POSTGRESUSERPWORD
+export USERHOMEDIR
+
+SCRIPTDIR='ubuntu'
+$SCRIPTDIR/as-root_setup_og
+$SCRIPTDIR/as-root_setup_pg
+
+sudo USERHOMEDIR=$USERHOMEDIR -iu $USERNAME $SCRIPTDIR/as-user_install_rvm_on_debian_or_ubuntu 
+sudo USERHOMEDIR=$USERHOMEDIR OPENGOVPARENTDIR=$OPENGOVPARENTDIR GITREPO=$GITREPO  -iu $USERNAME $SCRIPTDIR/as-user_clone_site

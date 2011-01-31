@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# Creates user opengovernment and databases og_production and og_development.
+# Run this script as root
+
+# First, create opengovernment as a superuser with createdb and login privileges. 
+sudo -u postgres createuser --superuser --createdb --login opengovernment
+
+# Then give the user a password
+# I'm sure there is a way to do this without running an external script,
+# but the sudo call interprets the quoted string, and I haven't (yet) worked
+# out how to pass the string through intact. Until I do, I put a one-liner in another script file,
+# and call it from here.
+# So I'd like to use this line:
+# sudo -u postgres psql -c "alter user opengovernment with encrypted password 'foobar';"
+# But instead, I do this:
+SCRIPTDIR=`dirname $0`
+sudo POSTGRESUSERPWORD=$POSTGRESUSERPWORD -u postgres $SCRIPTDIR/as-postgres_alter_user
+
+# Now create production and development dbs, owned by the new user
+sudo -u postgres createdb -O opengovernment og_production
+sudo -u postgres createdb -O opengovernment og_development
+

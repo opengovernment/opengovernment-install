@@ -1,0 +1,57 @@
+#!/bin/bash
+
+# If this script is run as a standalone script, uncomment these lines, and set the dirs
+# to whatever you want
+# OPENGOVPARENTDIR="/home/$USER"
+# USERHOMEDIR="/home/$USER"
+
+
+# This function is needed to let rvm change its environment from
+# within a script (like this one).
+# If we don't run this before clone_site(), then clone_site()
+# won't be able to use the command "rvm use ree@og".
+# See http://rvm.beginrescueend.com/workflow/scripting/
+load_rvm()
+{
+# Load RVM into a shell session *as a function*
+if [[ -s "$HOME/.rvm/scripts/rvm" ]] ; then
+  # First try to load from a user install
+  source "$HOME/.rvm/scripts/rvm"
+elif [[ -s "/usr/local/rvm/scripts/rvm" ]] ; then
+  # Then try to load from a root install
+  source "/usr/local/rvm/scripts/rvm"
+else
+  printf "ERROR: An RVM installation was not found.\n"
+fi
+}
+
+
+# This function clones the git repository.
+# You must run load_rvm before running this.
+clone_site()
+{
+  # cd to where we want to put the repository
+  cd $OPENGOVPARENTDIR
+
+  # Clone!
+  git clone $GITREPO
+
+  # The new repo has a .rvmrc file. That's good! We like rvm.
+  # But we need to move the .rvmrc file out of the way, so the 
+  # user isn't prompted for input while this script runs.
+  mv opengovernment/.rvmrc opengovernment/rvmrc
+  cd opengovernment
+  # Move it back.
+  mv ./rvmrc ./.rvmrc
+
+  git submodule init
+  git submodule update
+  rvm use ree-1.8.7
+  rvm --create ree@og
+  rvm use ree@og
+  bundle install
+}
+
+# Then run those functions
+load_rvm
+clone_site
