@@ -80,6 +80,8 @@ export MONGOAPT
 export POSTGRESUSERPWORD
 export USERHOMEDIR
 
+cd ubuntu
+
 SCRIPTDIR=`pwd`
 $SCRIPTDIR/as-root_setup_og
 $SCRIPTDIR/as-root_setup_pg
