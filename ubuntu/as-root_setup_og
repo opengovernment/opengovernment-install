@@ -17,12 +17,22 @@
 # 
 setup_mongodb()
 {
+  echo "setup_mongodb"
+
+  # If the script is run by run_as_root, then $MONGOAPT will already be set.
+  # Otherwise, if this script is running standalone, set it to a default
+  if [ -z "$MONGOAPT" ]
+  then
+    MONGOAPT='deb http://downloads.mongodb.org/distros/ubuntu 10.10 10gen'
+  fi
+
 # Check sources.list for mention of mongodb
   if ! grep mongodb /etc/apt/sources.list
     then
-      echo $MONGOAPT >> /etc/apt/sources.list
-      apt-get update
+      echo "$MONGOAPT" >> /etc/apt/sources.list
+      apt-get -y install debian-archive-keyring
       apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
+      apt-get update
       apt-get -y install mongodb-stable
     fi
 }
@@ -31,21 +41,24 @@ setup_mongodb()
 # Then update tomcat's config file 
 setup_geoserver_ubuntu10()
 {
-  cd /var/lib/tomcat6/webapps
+  if [ ! -d /var/lib/tomcat6/webapps/geoserver ]
+  then
+    cd /var/lib/tomcat6/webapps
 
-  # Fetch and unzip
-  sudo -u tomcat6 wget 'http://downloads.sourceforge.net/geoserver/geoserver-2.0.2-war.zip'
-  sudo -u tomcat6 unzip geoserver-2.0.2-war.zip && rm geoserver-2.0.2-war.zip
+    # Fetch and unzip
+    sudo -u tomcat6 wget 'http://downloads.sourceforge.net/geoserver/geoserver-2.0.2-war.zip'
+    sudo -u tomcat6 unzip geoserver-2.0.2-war.zip && rm geoserver-2.0.2-war.zip
 
-  # Update the /etc/default/tomcat6 config file
-  # Use sed to change the config file's line containing JAVA_OPS. The resulting line wll be:
-  # JAVA_OPS="-jvm server -Djava.awt.headless=true -Xmx256M"
-  sed 's/^JAVA_OPS.*/JAVA_OPS="-jvm server -Djava.awt.headless=true -Xmx256M"/' /etc/default/tomcat6 > tmp.tmp
-  rm -f /etc/default/tomcat6
-  mv tmp.tmp /etc/default/tomcat6
+    # Update the /etc/default/tomcat6 config file
+    # Use sed to change the config file's line containing JAVA_OPS. The resulting line wll be:
+    # JAVA_OPS="-jvm server -Djava.awt.headless=true -Xmx256M"
+    sed 's/^JAVA_OPS.*/JAVA_OPS="-jvm server -Djava.awt.headless=true -Xmx256M"/' /etc/default/tomcat6 > tmp.tmp
+    rm -f /etc/default/tomcat6
+    mv tmp.tmp /etc/default/tomcat6
 
-  # Restart Tomcat
-  service tomcat6 restart
+    # Restart Tomcat
+    service tomcat6 restart
+  fi
 }
 
 # Packages. Lots of packages.
@@ -72,3 +85,4 @@ install_packages_ubuntu10()
 setup_mongodb
 install_packages_ubuntu10
 setup_geoserver_ubuntu10
+

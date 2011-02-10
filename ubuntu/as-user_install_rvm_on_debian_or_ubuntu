@@ -20,7 +20,7 @@
 #
 # Run this as a normal user.
 # If this is run as a standalone script, the sudo line below
-# may prompt for your password.
+# may prompt for your password (to install prerequisites).
 # *********************************************************************
 
 
@@ -31,7 +31,6 @@
 if [ -z $USERHOMEDIR ]
 then
   USERHOMEDIR="/home/$USER"
-  sudo aptitude install build-essential bison openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-0 libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev
 fi
 
 
@@ -61,6 +60,8 @@ modify_bashrc()
 # Install rvm
 installrvm() 
 {
+  sudo aptitude install build-essential bison openssl libreadline6 libreadline6-dev curl git-core zlib1g zlib1g-dev libssl-dev libyaml-dev libsqlite3-0 libsqlite3-dev sqlite3 libxml2-dev libxslt-dev autoconf libc6-dev
+
   cd $USERHOMEDIR
 
 
@@ -79,10 +80,9 @@ installrvm()
 	# We've got rvm. Now load it.
 	source $USERHOMEDIR/.rvm/scripts/rvm
 
-	# rvm install ruby-1.9.2-head
-	# rvm --default use ruby-1.9.2-head
-	# rvm use ruby-1.9.2-head
 
+  # Installing ree should be brought out into its own function
+  # in case the user already had rvm installed but not ree-1.8.7.
 	rvm install ree-1.8.7
 	rvm --default use ree-1.8.7
 	rvm use ree-1.8.7
@@ -108,3 +108,4 @@ fi
 
 # Now run the script
 install_if_necessary
+

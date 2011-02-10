@@ -5,31 +5,67 @@
 # If you are cloning a read-write copy of the og database, make sure that
 # you have given github your ssh key before starting the script.
 # 
-# Then run this script, as root, from the script's directory, as "./install_on_ubuntu_1010"
+# Then run this script, as root, from the script's directory, as "./run_as_root"
 #
 # when the script is done, you will need to set config/database.yml and config/api_keys.yml.
 # Then import data, and you should be good to go.
 
-[[ "$(whoami)" == "root" ]] || (echo "Please run this script as root/sudo." && exit 1)
+ROOT_UID=0
+E_NOREPODIR=65
+E_WRONG_USER=66
+E_NOREPO=67
+E_NOARGS=68
+
+
+if [ -z $1 ]
+then
+  echo "Usage: ./install_on_ubuntu_1010 username [git repo] [postgres password]"
+  echo ""
+  echo "This script installs OpenGovernment in a regular user's directory."
+  echo "You need to supply at least that user's username."
+  echo "By default, the script will clone a read-only copy of the site from github."
+  echo "If you've forked a copy of the repo, and want to clone your forked copy instead,"
+  echo "then you need to provide that read-write git repository."
+  echo "The script creates a user in the Postgres database, opengovernment. The "
+  echo "password for that user is, by default, 'foobar'. Pretty secure, huh?"
+  echo "If you want to use a different password, pass that to the script, too."
+  exit $E_NOARGS
+fi
+
+if [ "$UID" -ne "$ROOT_UID" ]
+then
+  echo "This script must be run as root." 
+  exit $E_WRONG_USER
+fi
 
 # This is the account you will run opengovernment from 
 # This account must already exist before the script is run
-USERNAME='dev'
+USERNAME=$1
 
 # This defaults to the read-only main repository on github.
 # If you use a read-write git repository on github, you need to exchange ssh keys
 # with github before you run this.
-GITREPO='http://github.com/opengovernment/opengovernment.git'
+if [ -z $2 ]
+then
+  GITREPO="http://github.com/opengovernment/opengovernment.git"
+else
+  GITREPO=$2
+fi
 
 # This is the password that will be used for the postgres user 'opengovernment'
-POSTGRESUSERPWORD='foobar'
+if [ -z $3 ]
+then
+  POSTGRESUSERPWORD='foobar'
+else
+  POSTGRESUSERPWORD=$3
+fi
 
-# If you use an apt cache (like 'apt-cacher'), specify the cache url as APTCACHE.
-# APTCACHE='dmac/apt-cacher/'
-APTCACHE=""
 
 # Mongo DB's Debian packages are here. Change this according to your Linux distribution.
-MONGOAPT="deb http://$APTCACHE/downloads.mongodb.org/distros/ubuntu 10.10 10gen"
+MONGOAPT="deb http://downloads.mongodb.org/distros/ubuntu 10.10 10gen"
+
+# I use apt-cacher on a local machine called 'nut' to cach apt's package files. So my apt line looks like this:
+# MONGOAPT="deb http://nut/apt-cacher/downloads.mongodb.org/distros/ubuntu 10.10 10gen"
 
 # The home directory for the user
 USERHOMEDIR="/home/$USERNAME"
@@ -44,9 +80,14 @@ export MONGOAPT
 export POSTGRESUSERPWORD
 export USERHOMEDIR
 
-SCRIPTDIR='ubuntu'
+SCRIPTDIR=`pwd`
 $SCRIPTDIR/as-root_setup_og
 $SCRIPTDIR/as-root_setup_pg
 
 sudo USERHOMEDIR=$USERHOMEDIR -iu $USERNAME $SCRIPTDIR/as-user_install_rvm_on_debian_or_ubuntu 
 sudo USERHOMEDIR=$USERHOMEDIR OPENGOVPARENTDIR=$OPENGOVPARENTDIR GITREPO=$GITREPO  -iu $USERNAME $SCRIPTDIR/as-user_clone_site
+
+echo ""
+echo "Opengovernment has been set up; now you need to set rvm's environment variables."
+echo "The easiest way to do that is to just log out and then back in."
+

@@ -21,3 +21,4 @@ sudo POSTGRESUSERPWORD=$POSTGRESUSERPWORD -u postgres $SCRIPTDIR/as-postgres_alt
 sudo -u postgres createdb -O opengovernment og_production
 sudo -u postgres createdb -O opengovernment og_development
 
+

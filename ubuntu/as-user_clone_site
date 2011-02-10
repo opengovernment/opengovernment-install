@@ -1,9 +1,41 @@
 #!/bin/bash
 
-# If this script is run as a standalone script, uncomment these lines, and set the dirs
-# to whatever you want
-# OPENGOVPARENTDIR="/home/$USER"
-# USERHOMEDIR="/home/$USER"
+# Start off with some checks ...
+
+if [ -z $OPENGOVPARENTDIR ]
+then
+  # This script appears to be being run as a standalone script
+  # So we have to set these variables ourselves
+  OPENGOVPARENTDIR="/home/$USER"
+  USERHOMEDIR="/home/$USER"
+fi
+
+ROOT_UID=0
+E_NOREPODIR=65
+E_WRONG_USER=66
+E_NOREPO=67
+
+if [ "$UID" -eq "$ROOT_UID" ]
+then
+  echo "This script must not be run as root." 
+  exit $E_WRONG_USER
+fi
+
+
+# We need to know what repo to clone;
+# The parent script, if any, will set GITREPO.
+# Otherwise, if we're a standalone script, set it to $1.
+if [ -z $GITREPO ]
+then
+  if [ -z "$1" ]
+  then
+    echo "Usage: $0 git-repo-to-clone"
+    exit $E_NOREPO
+  else
+    GITREPO=$1
+  fi
+fi
+
 
 
 # This function is needed to let rvm change its environment from
@@ -30,11 +62,24 @@ fi
 # You must run load_rvm before running this.
 clone_site()
 {
-  # cd to where we want to put the repository
+  load_rvm
+  # cd to the parent of where we want to put the repository
   cd $OPENGOVPARENTDIR
 
-  # Clone!
-  git clone $GITREPO
+  if [ ! -d opengovernment ]
+  then
+    echo "No repository directory. Cloning."
+    # Clone!
+    git clone $GITREPO
+  else
+    echo "Already found a repository, so not cloning again."
+  fi
+
+  if [ ! -d opengovernment ]
+  then
+    echo "Unable to find or clone repository. Exiting."
+    exit $E_NOREPODIR
+  fi
 
   # The new repo has a .rvmrc file. That's good! We like rvm.
   # But we need to move the .rvmrc file out of the way, so the 
@@ -53,5 +98,5 @@ clone_site()
 }
 
 # Then run those functions
-load_rvm
 clone_site
+
