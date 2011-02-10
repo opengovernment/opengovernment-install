@@ -18,9 +18,8 @@ To use the scripts:
     sudo ./install_on_ubuntu_1010 your_ubuntu_username [your_opengovernment_fork_github_url] [password_for_new_psql_account]
 
 
-You need to pass to 
 The script has these options:
-* your username. 
+* Your username. 
 * [Optional] The url to your opengovernment repository, if you have your own fork. This defaults to a read-only copy of the main repository.
 * [Optional] A password for the new postgresql user. This defaults to 'foobar'. Pretty secure, huh? You might want to provide your own.
 
