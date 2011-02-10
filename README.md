@@ -19,6 +19,7 @@ To use the scripts:
 
 
 The script has these options:
+
 * Your username. 
 * [Optional] The url to your opengovernment repository, if you have your own fork. This defaults to a read-only copy of the main repository.
 * [Optional] A password for the new postgresql user. This defaults to 'foobar'. Pretty secure, huh? You might want to provide your own.
