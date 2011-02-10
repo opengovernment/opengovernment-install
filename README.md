@@ -14,7 +14,7 @@ To use the scripts:
     # (If you want to get a read-write repository: ssh-keygen, then exchange ssh keys with git)
 
     git clone git@github.com:opengovernment/opengovernment-install.git
-    cd install_og_on_ubuntu
+    cd opengovernment-install
     sudo ./install_on_ubuntu_1010 your_ubuntu_username [your_opengovernment_fork_github_url] [password_for_new_psql_account]
 
 
