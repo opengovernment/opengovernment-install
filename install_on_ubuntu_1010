@@ -19,7 +19,7 @@ E_NOARGS=68
 
 if [ -z $1 ]
 then
-  echo "Usage: ./install_on_ubuntu_1010 username [git repo] [postgres password]"
+  echo "Usage: sudo ./install_on_ubuntu_1010 username [git repo] [postgres password]"
   echo ""
   echo "This script installs OpenGovernment in a regular user's directory."
   echo "You need to supply at least that user's username."

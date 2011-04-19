@@ -78,6 +78,13 @@ install_packages_ubuntu10()
 	apt-get -y install mongodb-stable
 	apt-get -y install java-common default-jre-headless 
 	apt-get -y install tomcat6
+
+  # For pdf support:
+	apt-get -y install graphicsmagick
+	apt-get -y install poppler-utils
+	apt-get -y install tesseract
+	apt-get -y install pdftk
+	apt-get -y install openoffice.org openoffice.org-java-common
 }
 
 
