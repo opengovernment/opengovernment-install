@@ -65,15 +65,12 @@ installrvm()
   cd $USERHOMEDIR
 
 
-	# The next line doesn't work for me, for some reason, on this system
-	#   bash < <( curl http://rvm.beginrescueend.com/releases/rvm-install-head )
-
-	# So, break it up into its parts, and run them:
+	# Break the install script into its parts, and run them:
 	# first, download the install script
-	curl http://rvm.beginrescueend.com/releases/rvm-install-head > $USERHOMEDIR/rvm-install-head
+	curl https://rvm.beginrescueend.com/install/rvm > $USERHOMEDIR/rvm-install
 	# Then run it
-	chmod +x $USERHOMEDIR/rvm-install-head
-	$USERHOMEDIR/rvm-install-head
+	chmod +x $USERHOMEDIR/rvm-install
+	$USERHOMEDIR/rvm-install
 	# Then delete it
 	rm -f $USERHOMEDIR/rvm-install-head
 
