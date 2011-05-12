@@ -1,9 +1,9 @@
 This repository contains OpenGovernment install scripts for various platforms.
-Right now we only support an Ubuntu 10.10 install.
+Right now we only support an Ubuntu 11.04 or 10.10 install.
 
 To use the scripts:
 
-1. Start with a copy of Ubuntu 10.10. The scripts were tested on clean installs of [Ubuntu server](http://www.ubuntu.com/server/get-ubuntu/download) in a virtual machine using [VirtualBox](http://www.virtualbox.org/). VirtualBox is free, works great, and runs under Windows, OS X, and Linux. [VMWare](http://www.vmware.com/) would work fine, too, if you prefer that.
+1. Start with a copy of Ubuntu 11.04. The scripts were tested on clean installs of [Ubuntu server](http://www.ubuntu.com/server/get-ubuntu/download) in a virtual machine using [VirtualBox](http://www.virtualbox.org/). VirtualBox is free, works great, and runs under Windows, OS X, and Linux. [VMWare](http://www.vmware.com/) would work fine, too, if you prefer that.
 
 2. The scripts do have one prerequisite: git. And if you want to download a read-write copy of your own fork of opengovernment, you will need to [exchange ssh keys](http://help.github.com/linux-key-setup/) between github and your new Ubuntu machine before you run the script.
 
@@ -15,7 +15,7 @@ To use the scripts:
     
         git clone git@github.com:opengovernment/opengovernment-install.git
         cd opengovernment-install
-        sudo ./install_on_ubuntu_1010 your_ubuntu_username [your_opengovernment_fork_github_url] [password_for_new_psql_account]
+        sudo ./install_on_ubuntu_1104 your_ubuntu_username [your_opengovernment_fork_github_url] [password_for_new_psql_account]
 
 
 The script has these options:

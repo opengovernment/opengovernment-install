@@ -23,7 +23,7 @@ setup_mongodb()
   # Otherwise, if this script is running standalone, set it to a default
   if [ -z "$MONGOAPT" ]
   then
-    MONGOAPT='deb http://downloads.mongodb.org/distros/ubuntu 10.10 10gen'
+    MONGOAPT="deb http://downloads-distro.mongodb.org/repo/ubuntu-upstart dist 10gen"
   fi
 
 # Check sources.list for mention of mongodb
@@ -33,7 +33,7 @@ setup_mongodb()
       apt-get -y install debian-archive-keyring
       apt-key adv --keyserver keyserver.ubuntu.com --recv 7F0CEB10
       apt-get update
-      apt-get -y install mongodb-stable
+      apt-get -y install mongodb-10gen
     fi
 }
 
