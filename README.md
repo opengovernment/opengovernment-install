@@ -28,5 +28,14 @@ Once the script is done, you will need to make the config/database.yml and confi
 
 Then you should be ready to install data and get going.
 
-Thanks to Jeff Roush for putting together the Ubuntu install scripts.
+## Note on developing in a virtual machine via ssh
 
+Because of the way the site uses subdomains to specify states, you need to [browse the site as localhost](https://raw.github.com/gist/403002/7e1b16a04e5e66b5ece8922806e924715d482d6b/gistfile1.txt). 
+
+But if you've installed the site in a virtual machine, you probably want to browse it with your desktop's web browser -- and Rails on the virtual machine will see your requests as coming in from the web, which won't work.
+
+An easy way around this is to let ssh forward localhost:3000 to the virtual machine. Basically, on your desktop, you ssh to the virtual machine with these options:
+
+     ssh -X -L 3000:localhost:3000 virtualmachinename
+
+Then on the server use "rails s" to start the site in webrick. Then, on your desktop, point your browser to localhost:3000, and rails on the server will see the requests as coming in locally.
